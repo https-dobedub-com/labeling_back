@@ -1,3 +1,3 @@
-import { GeneralLabelingModule } from './labeling/general-labeling.module';
+import { ClipModule } from './clip/clip.module';
 
-export default [GeneralLabelingModule];
+export default [ClipModule];

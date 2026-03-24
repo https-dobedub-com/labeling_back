@@ -8,7 +8,7 @@
 - `Context` 기반 요청 스코프
 - `TypeORM` + `DddAggregate / DddRepository` 베이스
 - `health` 체크 엔드포인트
-- 샘플 도메인 `labeling`
+- `clip` 테이블 기반 도메인
 
 ## 실행
 
@@ -20,7 +20,5 @@ npm run start:dev
 ## 기본 엔드포인트
 
 - `GET /health`
-- `GET /labeling-tasks`
-- `GET /labeling-tasks/:id`
-- `GET /admin/labeling-tasks`
-- `POST /admin/labeling-tasks`
+- `GET /clips`
+- `GET /clips/:id`

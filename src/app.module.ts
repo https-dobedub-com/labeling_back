@@ -7,8 +7,6 @@ import { DatabasesModule } from '@databases';
 import { ExceptionFilter } from '@libs/filters';
 import { RequestLoggerInterceptor, TraceIdSubscriber } from '@libs/interceptors';
 import { ContextMiddleware, UUIDMiddleware } from '@middlewares';
-import adminsModule from './services/admins';
-import clientsModule from './services/clients';
 import generalsModule from './services/generals';
 import { HealthController } from './health.controller';
 
@@ -18,9 +16,7 @@ import { HealthController } from './health.controller';
         DatabasesModule,
         CommonModule,
         EventEmitterModule.forRoot(),
-        ...adminsModule,
         ...generalsModule,
-        ...clientsModule,
     ],
     controllers: [HealthController],
     providers: [

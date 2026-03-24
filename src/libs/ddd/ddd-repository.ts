@@ -32,7 +32,10 @@ export abstract class DddRepository<T extends DddAggregate> {
 
     private async saveEntities(entities: T[]) {
         const traceId = this.context.get<string>(ContextKey.TRACE_ID) ?? 'system';
-        entities.forEach((entity) => entity.setTraceId(traceId));
+        entities.forEach((entity) => {
+            const aggregate = entity as T & { setTraceId?: (traceId: string) => void };
+            aggregate.setTraceId?.(traceId);
+        });
         await this.entityManager.save(entities);
     }
 
