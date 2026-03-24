@@ -11,6 +11,9 @@ type ClipListConditions = Pick<
     'projectId' | 'characterId' | 'speakerId' | 'episodeId' | 'sessionId' | 'roomId'
 >;
 
+const CONTENTS_RECORDS_BASE_URL = 'https://dubright-contents-v2.s3.ap-northeast-2.amazonaws.com/records';
+const DUBRIGHTS_PATTERN_BASE_URL = 'https://dubright-pattern.s3.ap-northeast-2.amazonaws.com/dubrights/';
+
 @Injectable()
 export class ClipService extends DddService {
     constructor(
@@ -27,7 +30,10 @@ export class ClipService extends DddService {
         ]);
 
         return {
-            items,
+            items: items.map((item) => ({
+                ...item,
+                audioPath: this.resolveAudioPath(item.audioPath),
+            })),
             total,
             page: options?.page ?? 1,
             limit: options?.limit ?? 20,
@@ -66,7 +72,7 @@ export class ClipService extends DddService {
                 speakerId: row.clipSpeakerId,
                 episodeId: row.clipEpisodeId,
                 scriptText: row.clipScriptText,
-                audioPath: row.clipAudioPath,
+                audioPath: this.resolveAudioPath(row.clipAudioPath),
                 sessionId: row.clipSessionId,
                 micType: row.clipMicType,
                 roomId: row.clipRoomId,
@@ -184,5 +190,25 @@ export class ClipService extends DddService {
         }
 
         return Boolean(value);
+    }
+
+    private resolveAudioPath(audioPath: string | null) {
+        if (!audioPath) {
+            return audioPath;
+        }
+
+        if (/^https?:\/\//.test(audioPath)) {
+            return audioPath;
+        }
+
+        if (/^\/[0-9]{4}-[0-9]{2}\/[^/]+$/.test(audioPath)) {
+            return `${CONTENTS_RECORDS_BASE_URL}${audioPath}`;
+        }
+
+        if (/^(webtoon\/[0-9]+\/round\/[0-9]+\/)?recordings?\/[^/]+$/.test(audioPath)) {
+            return `${DUBRIGHTS_PATTERN_BASE_URL}${audioPath}`;
+        }
+
+        return audioPath;
     }
 }
