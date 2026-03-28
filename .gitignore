@@ -63,3 +63,7 @@ swagger.json
 /plan
 /rules
 AGENTS.md
+
+# Local docs/scripts
+/docs
+/scripts
