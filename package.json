@@ -10,6 +10,8 @@
         "copy:dubright": "ts-node --transpile-only scripts/dubright-copy.ts",
         "copy:dubright:dry": "ts-node --transpile-only scripts/dubright-copy.ts --dry-run",
         "copy:dubright:help": "ts-node --transpile-only scripts/dubright-copy.ts --help",
+        "copy:dubright:label-metadata": "ts-node --transpile-only scripts/dubright-copy.ts --task ./scripts/tasks/copy-dubright-label-metadata.ts",
+        "copy:dubright:label-metadata:dry": "ts-node --transpile-only scripts/dubright-copy.ts --task ./scripts/tasks/copy-dubright-label-metadata.ts --dry-run",
         "format": "prettier --write \"src/**/*.ts\"",
         "start": "nest start",
         "start:dev": "NODE_ENV=local nest start --watch",

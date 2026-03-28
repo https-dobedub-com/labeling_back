@@ -30,3 +30,10 @@ npm run copy:dubright:help
 ```
 
 - 상세 설명: `docs/dubright-copy-script.md`
+- 실제 dubright_label 메타데이터 통합 task:
+
+```bash
+npm run copy:dubright:label-metadata:dry
+```
+
+- 이 task는 `project.genre`, `project.sub_genre(NULL)`, `project.source_lang`, `character.role_type`, `clip.duration_sec`까지 함께 반영합니다.
