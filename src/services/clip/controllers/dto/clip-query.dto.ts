@@ -1,31 +1,28 @@
 import { PaginationDto } from '@common/types';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class ClipQueryDto extends PaginationDto {
 
     @ApiPropertyOptional()
     @IsOptional()
-    @Type(() => Number)
-    @IsNumber()
-    projectId?: number;
+    @IsString()
+    projectName?: string;
 
     @ApiPropertyOptional()
     @IsOptional()
     @IsString()
-    characterId?: string;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @Type(() => Number)
-    @IsNumber()
-    speakerId?: number;
+    characterName?: string;
 
     @ApiPropertyOptional()
     @IsOptional()
     @IsString()
-    episodeId?: string;
+    speakerName?: string;
+
+    @ApiPropertyOptional()
+    @IsOptional()
+    @IsString()
+    episodeName?: string;
 
     @ApiPropertyOptional()
     @IsOptional()

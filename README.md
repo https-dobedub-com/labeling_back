@@ -22,3 +22,11 @@ npm run start:dev
 - `GET /health`
 - `GET /clips`
 - `GET /clips/:id`
+
+## 데이터 복사 스크립트
+
+```bash
+npm run copy:dubright:help
+```
+
+- 상세 설명: `docs/dubright-copy-script.md`

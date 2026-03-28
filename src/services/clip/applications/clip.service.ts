@@ -8,7 +8,7 @@ import { ClipMetadataRow, ClipRepository } from '../repository/clip.repository';
 
 type ClipListConditions = Pick<
     ClipQueryDto,
-    'projectId' | 'characterId' | 'speakerId' | 'episodeId' | 'sessionId' | 'roomId'
+    'projectName' | 'characterName' | 'speakerName' | 'episodeName' | 'sessionId' | 'roomId'
 >;
 
 const CONTENTS_RECORDS_BASE_URL = 'https://dubright-contents-v2.s3.ap-northeast-2.amazonaws.com/records';

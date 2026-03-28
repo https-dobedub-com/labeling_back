@@ -7,6 +7,9 @@
     "license": "UNLICENSED",
     "scripts": {
         "build": "nest build",
+        "copy:dubright": "ts-node --transpile-only scripts/dubright-copy.ts",
+        "copy:dubright:dry": "ts-node --transpile-only scripts/dubright-copy.ts --dry-run",
+        "copy:dubright:help": "ts-node --transpile-only scripts/dubright-copy.ts --help",
         "format": "prettier --write \"src/**/*.ts\"",
         "start": "nest start",
         "start:dev": "NODE_ENV=local nest start --watch",

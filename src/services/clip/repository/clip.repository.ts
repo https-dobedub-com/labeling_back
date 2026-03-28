@@ -5,10 +5,10 @@ import { DataSource } from 'typeorm';
 
 type ClipFindConditions = {
     clipId?: number;
-    projectId?: number;
-    characterId?: string;
-    speakerId?: number;
-    episodeId?: string;
+    projectName?: string;
+    characterName?: string;
+    speakerName?: string;
+    episodeName?: string;
     sessionId?: string;
     roomId?: string;
 };
@@ -132,26 +132,28 @@ export class ClipRepository {
         return this.dataSource.query(
             `
                 SELECT
-                    clip_id AS clipId,
-                    project_id AS projectId,
-                    character_id AS characterId,
-                    speaker_id AS speakerId,
-                    episode_id AS episodeId,
-                    script_text AS scriptText,
-                    audio_path AS audioPath,
-                    session_id AS sessionId,
-                    mic_type AS micType,
-                    room_id AS roomId,
-                    distance_category AS distanceCategory,
-                    sample_rate AS sampleRate,
-                    bit_depth AS bitDepth,
-                    channels AS channels,
-                    duration_sec AS durationSec,
-                    noise_level AS noiseLevel,
-                    post_process AS postProcess,
-                    created_at AS createdAt,
-                    updated_at AS updatedAt
-                FROM clip
+                    c.clip_id AS clipId,
+                    c.project_id AS projectId,
+                    c.character_id AS characterId,
+                    c.speaker_id AS speakerId,
+                    c.episode_id AS episodeId,
+                    c.script_text AS scriptText,
+                    c.audio_path AS audioPath,
+                    c.session_id AS sessionId,
+                    c.mic_type AS micType,
+                    c.room_id AS roomId,
+                    c.distance_category AS distanceCategory,
+                    c.sample_rate AS sampleRate,
+                    c.bit_depth AS bitDepth,
+                    c.channels AS channels,
+                    c.duration_sec AS durationSec,
+                    c.noise_level AS noiseLevel,
+                    c.post_process AS postProcess,
+                    c.created_at AS createdAt,
+                    c.updated_at AS updatedAt
+                FROM clip c
+                LEFT JOIN project p ON p.project_id = c.project_id
+                LEFT JOIN speaker s ON s.speaker_id = c.speaker_id
                 ${whereClause}
                 ORDER BY ${sortColumn} ${sortOrder}
                 LIMIT ? OFFSET ?
@@ -165,7 +167,9 @@ export class ClipRepository {
         const [result] = (await this.dataSource.query(
             `
                 SELECT COUNT(*) AS total
-                FROM clip
+                FROM clip c
+                LEFT JOIN project p ON p.project_id = c.project_id
+                LEFT JOIN speaker s ON s.speaker_id = c.speaker_id
                 ${whereClause}
             `,
             params
@@ -280,37 +284,37 @@ export class ClipRepository {
         const params: Array<number | string> = [];
 
         if (conditions.clipId !== undefined) {
-            clauses.push('clip_id = ?');
+            clauses.push('c.clip_id = ?');
             params.push(conditions.clipId);
         }
 
-        if (conditions.projectId !== undefined) {
-            clauses.push('project_id = ?');
-            params.push(conditions.projectId);
+        if (conditions.projectName) {
+            clauses.push('p.title_ko LIKE ?');
+            params.push(`%${conditions.projectName}%`);
         }
 
-        if (conditions.characterId) {
-            clauses.push('character_id = ?');
-            params.push(conditions.characterId);
+        if (conditions.characterName) {
+            clauses.push('c.character_id LIKE ?');
+            params.push(`%${conditions.characterName}%`);
         }
 
-        if (conditions.speakerId !== undefined) {
-            clauses.push('speaker_id = ?');
-            params.push(conditions.speakerId);
+        if (conditions.speakerName) {
+            clauses.push('s.name LIKE ?');
+            params.push(`%${conditions.speakerName}%`);
         }
 
-        if (conditions.episodeId) {
-            clauses.push('episode_id = ?');
-            params.push(conditions.episodeId);
+        if (conditions.episodeName) {
+            clauses.push('c.episode_id LIKE ?');
+            params.push(`%${conditions.episodeName}%`);
         }
 
         if (conditions.sessionId) {
-            clauses.push('session_id = ?');
+            clauses.push('c.session_id = ?');
             params.push(conditions.sessionId);
         }
 
         if (conditions.roomId) {
-            clauses.push('room_id LIKE ?');
+            clauses.push('c.room_id LIKE ?');
             params.push(`%${conditions.roomId}%`);
         }
 
@@ -322,18 +326,18 @@ export class ClipRepository {
 
     private getSortColumn(sort?: string) {
         const sortableColumns: Record<string, string> = {
-            clipId: 'clip_id',
-            projectId: 'project_id',
-            characterId: 'character_id',
-            speakerId: 'speaker_id',
-            episodeId: 'episode_id',
-            sessionId: 'session_id',
-            roomId: 'room_id',
-            createdAt: 'created_at',
-            updatedAt: 'updated_at',
-            durationSec: 'duration_sec',
+            clipId: 'c.clip_id',
+            projectId: 'c.project_id',
+            characterId: 'c.character_id',
+            speakerId: 'c.speaker_id',
+            episodeId: 'c.episode_id',
+            sessionId: 'c.session_id',
+            roomId: 'c.room_id',
+            createdAt: 'c.created_at',
+            updatedAt: 'c.updated_at',
+            durationSec: 'c.duration_sec',
         };
 
-        return sortableColumns[sort ?? ''] ?? 'clip_id';
+        return sortableColumns[sort ?? ''] ?? 'c.clip_id';
     }
 }
