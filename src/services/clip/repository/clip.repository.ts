@@ -5,7 +5,7 @@ import { DataSource } from 'typeorm';
 
 type ClipFindConditions = {
     clipId?: number;
-    projectName?: string;
+    projectTitle?: string;
     characterName?: string;
     speakerName?: string;
     episodeName?: string;
@@ -288,9 +288,9 @@ export class ClipRepository {
             params.push(conditions.clipId);
         }
 
-        if (conditions.projectName) {
+        if (conditions.projectTitle) {
             clauses.push('p.title_ko LIKE ?');
-            params.push(`%${conditions.projectName}%`);
+            params.push(`%${conditions.projectTitle}%`);
         }
 
         if (conditions.characterName) {

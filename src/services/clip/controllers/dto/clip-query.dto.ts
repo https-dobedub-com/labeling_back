@@ -7,7 +7,7 @@ export class ClipQueryDto extends PaginationDto {
     @ApiPropertyOptional()
     @IsOptional()
     @IsString()
-    projectName?: string;
+    projectTitle?: string;
 
     @ApiPropertyOptional()
     @IsOptional()
