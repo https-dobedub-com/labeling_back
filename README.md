@@ -30,10 +30,25 @@ npm run copy:dubright:help
 ```
 
 - 상세 설명: `docs/dubright-copy-script.md`
-- 실제 dubright_label 메타데이터 통합 task:
+- project metadata task:
 
 ```bash
-npm run copy:dubright:label-metadata:dry
+npm run copy:dubright:project-metadata:dry
 ```
 
-- 이 task는 `project.genre`, `project.sub_genre(NULL)`, `project.source_lang`, `character.role_type`, `clip.duration_sec`까지 함께 반영합니다.
+- character role_type task:
+
+```bash
+npm run copy:dubright:character-role-type:dry
+```
+
+- clip duration task:
+
+```bash
+npm run copy:dubright:clip-duration:dry
+```
+
+- `.env.copy`가 있으면 copy script 실행 시 자동으로 읽습니다.
+- 상세 실패 로그는 `logs/copy/<runId>.jsonl`에 남습니다.
+- 실제 실행 시 target write는 batch transaction 단위로 rollback 됩니다.
+- 실행 완료 후 `target-audit` 결과로 target 기준 미처리 행 존재 여부를 확인할 수 있습니다.

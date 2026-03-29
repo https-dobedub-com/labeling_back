@@ -17,11 +17,19 @@ class ClipDetailDto {
 
     @Expose()
     @ApiPropertyOptional({ nullable: true })
+    characterName!: string | null;
+
+    @Expose()
+    @ApiPropertyOptional({ nullable: true })
     speakerId!: number | null;
 
     @Expose()
     @ApiPropertyOptional({ nullable: true })
     episodeId!: string | null;
+
+    @Expose()
+    @ApiPropertyOptional({ nullable: true })
+    episodeName!: string | null;
 
     @Expose()
     @ApiPropertyOptional({ nullable: true })
@@ -132,6 +140,10 @@ class CharacterDetailDto {
     @Expose()
     @ApiProperty()
     characterId!: string;
+
+    @Expose()
+    @ApiPropertyOptional({ nullable: true })
+    characterName!: string | null;
 
     @Expose()
     @ApiPropertyOptional({ nullable: true })

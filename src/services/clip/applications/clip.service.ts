@@ -69,8 +69,10 @@ export class ClipService extends DddService {
                 clipId: row.clipId,
                 projectId: row.clipProjectId,
                 characterId: row.clipCharacterId,
+                characterName: row.clipCharacterName,
                 speakerId: row.clipSpeakerId,
                 episodeId: row.clipEpisodeId,
+                episodeName: row.clipEpisodeName,
                 scriptText: row.clipScriptText,
                 audioPath: this.resolveAudioPath(row.clipAudioPath),
                 sessionId: row.clipSessionId,
@@ -107,6 +109,7 @@ export class ClipService extends DddService {
                     ? null
                     : {
                           characterId: row.characterCharacterId,
+                          characterName: row.characterCharacterName,
                           projectId: row.characterProjectId,
                           roleName: row.characterRoleName,
                           gender: row.characterGender,

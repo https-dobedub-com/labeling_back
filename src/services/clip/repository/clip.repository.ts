@@ -16,9 +16,13 @@ type ClipFindConditions = {
 export type ClipRow = {
     clipId: number;
     projectId: number | null;
+    projectTitle: string | null;
     characterId: string | null;
+    characterName: string | null;
     speakerId: number | null;
+    speakerName: string | null;
     episodeId: string | null;
+    episodeName: string | null;
     scriptText: string | null;
     audioPath: string | null;
     sessionId: string | null;
@@ -39,8 +43,10 @@ export type ClipMetadataRow = {
     clipId: number;
     clipProjectId: number | null;
     clipCharacterId: string | null;
+    clipCharacterName: string | null;
     clipSpeakerId: number | null;
     clipEpisodeId: string | null;
+    clipEpisodeName: string | null;
     clipScriptText: string | null;
     clipAudioPath: string | null;
     clipSessionId: string | null;
@@ -67,6 +73,7 @@ export type ClipMetadataRow = {
     projectCreatedAt: Date | string | null;
     projectUpdatedAt: Date | string | null;
     characterCharacterId: string | null;
+    characterCharacterName: string | null;
     characterProjectId: number | null;
     characterRoleName: string | null;
     characterGender: string | null;
@@ -134,9 +141,13 @@ export class ClipRepository {
                 SELECT
                     c.clip_id AS clipId,
                     c.project_id AS projectId,
+                    p.title_ko AS projectTitle,
                     c.character_id AS characterId,
+                    ch.character_name AS characterName,
                     c.speaker_id AS speakerId,
+                    s.name AS speakerName,
                     c.episode_id AS episodeId,
+                    c.episode_name AS episodeName,
                     c.script_text AS scriptText,
                     c.audio_path AS audioPath,
                     c.session_id AS sessionId,
@@ -153,6 +164,7 @@ export class ClipRepository {
                     c.updated_at AS updatedAt
                 FROM clip c
                 LEFT JOIN project p ON p.project_id = c.project_id
+                LEFT JOIN \`character\` ch ON ch.character_id = c.character_id
                 LEFT JOIN speaker s ON s.speaker_id = c.speaker_id
                 ${whereClause}
                 ORDER BY ${sortColumn} ${sortOrder}
@@ -169,6 +181,7 @@ export class ClipRepository {
                 SELECT COUNT(*) AS total
                 FROM clip c
                 LEFT JOIN project p ON p.project_id = c.project_id
+                LEFT JOIN \`character\` ch ON ch.character_id = c.character_id
                 LEFT JOIN speaker s ON s.speaker_id = c.speaker_id
                 ${whereClause}
             `,
@@ -185,8 +198,10 @@ export class ClipRepository {
                     c.clip_id AS clipId,
                     c.project_id AS clipProjectId,
                     c.character_id AS clipCharacterId,
+                    ch.character_name AS clipCharacterName,
                     c.speaker_id AS clipSpeakerId,
                     c.episode_id AS clipEpisodeId,
+                    c.episode_name AS clipEpisodeName,
                     c.script_text AS clipScriptText,
                     c.audio_path AS clipAudioPath,
                     c.session_id AS clipSessionId,
@@ -215,6 +230,7 @@ export class ClipRepository {
                     p.updated_at AS projectUpdatedAt,
 
                     ch.character_id AS characterCharacterId,
+                    ch.character_name AS characterCharacterName,
                     ch.project_id AS characterProjectId,
                     ch.role_name AS characterRoleName,
                     ch.gender AS characterGender,
@@ -294,7 +310,7 @@ export class ClipRepository {
         }
 
         if (conditions.characterName) {
-            clauses.push('c.character_id LIKE ?');
+            clauses.push('ch.character_name LIKE ?');
             params.push(`%${conditions.characterName}%`);
         }
 
@@ -304,7 +320,7 @@ export class ClipRepository {
         }
 
         if (conditions.episodeName) {
-            clauses.push('c.episode_id LIKE ?');
+            clauses.push('c.episode_name LIKE ?');
             params.push(`%${conditions.episodeName}%`);
         }
 
@@ -329,8 +345,10 @@ export class ClipRepository {
             clipId: 'c.clip_id',
             projectId: 'c.project_id',
             characterId: 'c.character_id',
+            characterName: 'ch.character_name',
             speakerId: 'c.speaker_id',
             episodeId: 'c.episode_id',
+            episodeName: 'c.episode_name',
             sessionId: 'c.session_id',
             roomId: 'c.room_id',
             createdAt: 'c.created_at',
