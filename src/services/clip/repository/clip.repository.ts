@@ -35,6 +35,7 @@ export type ClipRow = {
     durationSec: number | null;
     noiseLevel: string | null;
     postProcess: string | null;
+    hasPerformance: number | boolean;
     createdAt: Date | string | null;
     updatedAt: Date | string | null;
 };
@@ -160,12 +161,14 @@ export class ClipRepository {
                     c.duration_sec AS durationSec,
                     c.noise_level AS noiseLevel,
                     c.post_process AS postProcess,
+                    CASE WHEN pf.clip_id IS NOT NULL THEN 1 ELSE 0 END AS hasPerformance,
                     c.created_at AS createdAt,
                     c.updated_at AS updatedAt
                 FROM clip c
                 LEFT JOIN project p ON p.project_id = c.project_id
                 LEFT JOIN \`character\` ch ON ch.character_id = c.character_id
                 LEFT JOIN speaker s ON s.speaker_id = c.speaker_id
+                LEFT JOIN performance pf ON pf.clip_id = c.clip_id
                 ${whereClause}
                 ORDER BY ${sortColumn} ${sortOrder}
                 LIMIT ? OFFSET ?

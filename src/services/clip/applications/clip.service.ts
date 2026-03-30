@@ -33,6 +33,7 @@ export class ClipService extends DddService {
             items: items.map((item) => ({
                 ...item,
                 audioPath: this.resolveAudioPath(item.audioPath),
+                hasPerformance: this.toBoolean(item.hasPerformance),
             })),
             total,
             page: options?.page ?? 1,

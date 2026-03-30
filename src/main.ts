@@ -11,11 +11,7 @@ import { requesterValidatorPipe } from '@libs/pipes';
     const app = await NestFactory.create(AppModule, { logger });
     const configsService = app.get(ConfigsService);
 
-    app.enableCors({
-        origin: configsService.app.corsOrigins.length > 0 ? configsService.app.corsOrigins : true,
-        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-        credentials: true,
-    });
+    app.enableCors();
     app.use(compression());
     app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
     app.useGlobalPipes(requesterValidatorPipe);
