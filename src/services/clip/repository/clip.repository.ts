@@ -11,6 +11,7 @@ type ClipFindConditions = {
     episodeName?: string;
     sessionId?: string;
     roomId?: string;
+    unlabeledOnly?: boolean;
 };
 
 export type ClipRow = {
@@ -186,6 +187,7 @@ export class ClipRepository {
                 LEFT JOIN project p ON p.project_id = c.project_id
                 LEFT JOIN \`character\` ch ON ch.character_id = c.character_id
                 LEFT JOIN speaker s ON s.speaker_id = c.speaker_id
+                LEFT JOIN performance pf ON pf.clip_id = c.clip_id
                 ${whereClause}
             `,
             params
@@ -335,6 +337,10 @@ export class ClipRepository {
         if (conditions.roomId) {
             clauses.push('c.room_id LIKE ?');
             params.push(`%${conditions.roomId}%`);
+        }
+
+        if (conditions.unlabeledOnly === true) {
+            clauses.push('pf.clip_id IS NULL');
         }
 
         return {
