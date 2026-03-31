@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Put, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ClipService } from '../applications/clip.service';
-import { ClipPerformanceUpdateDto, ClipQueryDto } from './dto';
+import { ClipPerformanceUpdateDto, ClipQueryDto, ClipStatsQueryDto } from './dto';
 
 @ApiTags('clips')
 @Controller('clips')
@@ -20,6 +20,20 @@ export class ClipController {
             { projectTitle, characterName, speakerName, episodeName, sessionId, roomId, unlabeledOnly },
             options
         );
+
+        // 4. Send response
+        return { data };
+    }
+
+    @Get('stats')
+    async stats(@Query() query: ClipStatsQueryDto) {
+        // 1. Destructure body, params, query
+        const { projectTitle, characterName, speakerName } = query;
+
+        // 2. Get context
+
+        // 3. Get result
+        const data = await this.clipService.stats({ projectTitle, characterName, speakerName });
 
         // 4. Send response
         return { data };
