@@ -8,7 +8,7 @@ import { ClipMetadataRow, ClipRepository, ClipStatsRow } from '../repository/cli
 
 type ClipListConditions = Pick<
     ClipQueryDto,
-    'projectTitle' | 'characterName' | 'speakerName' | 'episodeName' | 'sessionId' | 'roomId' | 'unlabeledOnly'
+    'clipId' | 'projectTitle' | 'characterName' | 'speakerName' | 'episodeName' | 'sessionId' | 'roomId' | 'unlabeledOnly'
 >;
 
 type ClipStatsConditions = Pick<ClipQueryDto, 'projectTitle' | 'characterName' | 'speakerName'>;

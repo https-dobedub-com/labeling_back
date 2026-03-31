@@ -11,13 +11,13 @@ export class ClipController {
     @Get()
     async list(@Query() query: ClipQueryDto) {
         // 1. Destructure body, params, query
-        const { projectTitle, characterName, speakerName, episodeName, sessionId, roomId, unlabeledOnly, ...options } = query;
+        const { clipId, projectTitle, characterName, speakerName, episodeName, sessionId, roomId, unlabeledOnly, ...options } = query;
 
         // 2. Get context
 
         // 3. Get result
         const data = await this.clipService.list(
-            { projectTitle, characterName, speakerName, episodeName, sessionId, roomId, unlabeledOnly },
+            { clipId, projectTitle, characterName, speakerName, episodeName, sessionId, roomId, unlabeledOnly },
             options
         );
 

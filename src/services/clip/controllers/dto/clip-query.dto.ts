@@ -1,9 +1,15 @@
 import { PaginationDto } from '@common/types';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsBoolean, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class ClipQueryDto extends PaginationDto {
+
+    @ApiPropertyOptional()
+    @IsOptional()
+    @Type(() => Number)
+    @IsInt()
+    clipId?: number;
 
     @ApiPropertyOptional()
     @IsOptional()
