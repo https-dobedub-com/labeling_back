@@ -2,14 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { DddService } from '@libs/ddd';
 import { PaginationOptions } from '@libs/utils';
-import { ClipPerformanceUpdateDto, ClipMetadataResponseDto, ClipQueryDto } from '../controllers/dto';
+import { ClipPerformanceUpdateDto, ClipMetadataResponseDto, ClipQueryDto, ClipStatsResponseDto } from '../controllers/dto';
 import { ClipPerformanceRepository } from '../repository/clip-performance.repository';
-import { ClipMetadataRow, ClipRepository } from '../repository/clip.repository';
+import { ClipMetadataRow, ClipRepository, ClipStatsRow } from '../repository/clip.repository';
 
 type ClipListConditions = Pick<
     ClipQueryDto,
     'projectTitle' | 'characterName' | 'speakerName' | 'episodeName' | 'sessionId' | 'roomId' | 'unlabeledOnly'
 >;
+
+type ClipStatsConditions = Pick<ClipQueryDto, 'projectTitle' | 'characterName' | 'speakerName'>;
 
 const CONTENTS_RECORDS_BASE_URL = 'https://dubright-contents-v2.s3.ap-northeast-2.amazonaws.com/records';
 const DUBRIGHTS_PATTERN_BASE_URL = 'https://dubright-pattern.s3.ap-northeast-2.amazonaws.com/dubrights/';
@@ -62,6 +64,16 @@ export class ClipService extends DddService {
 
         await this.clipPerformanceRepository.put(id, payload);
         return this.retrieve(id);
+    }
+
+    async stats(conditions: ClipStatsConditions) {
+        const stats = await this.clipRepository.getStats(conditions);
+
+        return plainToInstance(
+            ClipStatsResponseDto,
+            this.toStatsResponse(stats),
+            { excludeExtraneousValues: true }
+        );
     }
 
     private toMetadataResponse(row: ClipMetadataRow) {
@@ -173,6 +185,24 @@ export class ClipService extends DddService {
                           createdAt: row.performanceCreatedAt,
                           updatedAt: row.performanceUpdatedAt,
                       },
+        };
+    }
+
+    private toStatsResponse(row: ClipStatsRow | null) {
+        const projectCount = Number(row?.projectCount ?? 0);
+        const characterCount = Number(row?.characterCount ?? 0);
+        const clipCount = Number(row?.clipCount ?? 0);
+        const completedCount = Number(row?.completedCount ?? 0);
+        const incompleteCount = Number(row?.incompleteCount ?? 0);
+        const completionRate = clipCount > 0 ? Number(((completedCount / clipCount) * 100).toFixed(2)) : 0;
+
+        return {
+            projectCount,
+            characterCount,
+            clipCount,
+            completedCount,
+            incompleteCount,
+            completionRate,
         };
     }
 

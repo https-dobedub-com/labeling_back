@@ -14,6 +14,11 @@ type ClipFindConditions = {
     unlabeledOnly?: boolean;
 };
 
+type ClipStatsConditions = Pick<
+    ClipFindConditions,
+    'projectTitle' | 'characterName' | 'speakerName'
+>;
+
 export type ClipRow = {
     clipId: number;
     projectId: number | null;
@@ -122,6 +127,14 @@ export type ClipMetadataRow = {
     performanceProsodyTags: string | null;
     performanceCreatedAt: Date | string | null;
     performanceUpdatedAt: Date | string | null;
+};
+
+export type ClipStatsRow = {
+    projectCount: number | string;
+    characterCount: number | string;
+    clipCount: number | string;
+    completedCount: number | string;
+    incompleteCount: number | string;
 };
 
 @Injectable()
@@ -296,6 +309,29 @@ export class ClipRepository {
             `,
             [clipId]
         )) as ClipMetadataRow[];
+
+        return row ?? null;
+    }
+
+    async getStats(conditions: ClipStatsConditions) {
+        const { whereClause, params } = this.buildWhereClause(conditions);
+        const [row] = (await this.dataSource.query(
+            `
+                SELECT
+                    COUNT(DISTINCT c.project_id) AS projectCount,
+                    COUNT(DISTINCT c.character_id) AS characterCount,
+                    COUNT(DISTINCT c.clip_id) AS clipCount,
+                    COUNT(DISTINCT CASE WHEN pf.clip_id IS NOT NULL THEN c.clip_id END) AS completedCount,
+                    COUNT(DISTINCT CASE WHEN pf.clip_id IS NULL THEN c.clip_id END) AS incompleteCount
+                FROM clip c
+                LEFT JOIN project p ON p.project_id = c.project_id
+                LEFT JOIN \`character\` ch ON ch.character_id = c.character_id
+                LEFT JOIN speaker s ON s.speaker_id = c.speaker_id
+                LEFT JOIN performance pf ON pf.clip_id = c.clip_id
+                ${whereClause}
+            `,
+            params
+        )) as ClipStatsRow[];
 
         return row ?? null;
     }
